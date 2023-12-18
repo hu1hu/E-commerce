@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecommerce.mapper.ShoppingCartMapper">
+    <resultMap id="shoppingCartProductMap" type="com.ecommerce.model.vo.ShoppingCartProduct">
+        <id property="id" column="id"/>
+        <result property="buyerId" column="buyer_id"/>
+        <result property="count" column="count"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="name"/>
+        <result property="productPrice" column="price"/>
+        <result property="productCoverUrl" column="cover_url"/>
+    </resultMap>
+    <delete id="delete">
+        delete
+        from `t_shopping_cart`
+        where product_id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        <if test="uid != '' and uid != null">
+            and buyer_id = #{uid}
+        </if>
+    </delete>
+    <select id="selectByUid" resultMap="shoppingCartProductMap">
+        select t_shopping_cart.id id,t_shopping_cart.buyer_id,t_shopping_cart.count,t_product.id product_id,t_product.name,t_product.price,t_product.cover_url
+        from t_shopping_cart
+        join t_product
+        on t_shopping_cart.product_id = t_product.id
+        where t_shopping_cart.buyer_id = #{uid}
+    </select>
+</mapper>

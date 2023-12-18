@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecommerce.mapper.HistoryMapper">
+    <select id="getList" resultType="com.ecommerce.model.vo.Res2History">
+        select t_product.id as id, t_product.`name` as `name`,t_product.price as price,t_product.cover_url as cover_url,t_history.time time
+        from t_history
+        join t_product
+        on t_history.product_id = t_product.id
+        where t_history.buyer_id = #{buyerId}
+        order by t_history.time desc
+    </select>
+</mapper>

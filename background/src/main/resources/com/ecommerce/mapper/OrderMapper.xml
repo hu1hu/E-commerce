@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecommerce.mapper.OrderMapper">
+    <select id="getSaleList" resultType="com.ecommerce.model.vo.SalesData">
+        select t_product.id id,t_product.`name` name,total_number,total_money
+        from t_product join
+        (select product_id,sum(count) total_number,sum(price*count) total_money
+        from t_order
+        <where>
+            <if test="begin != null and end != null">
+                time between #{begin} and #{end}
+            </if>
+        </where>
+        group by product_id) t
+        on t_product.id = t.product_id
+        <where>
+            t_product.seller_id = #{phoneNumber}
+        </where>
+    </select>
+    <select id="getList" resultType="com.ecommerce.model.vo.Res2Order">
+        select t_order.*,t_product.name product_name,t_product.cover_url product_cover_url
+        from `t_order` join t_product
+        on t_order.product_id = t_product.id
+        where buyer_id = #{phoneNumber}
+        order by time desc
+    </select>
+</mapper>

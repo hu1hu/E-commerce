@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ecommerce.mapper.ProductMapper">
+
+    <!-- 动态更新 -->
+    <update id="update">
+        update t_product
+        <set>
+            <if test="category != '' and category != null">
+                category = #{category},
+            </if>
+            <if test="name != '' and name != null">
+                name = #{name},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="sellerId != null and sellerId!=''">
+                seller_id = #{sellerId},
+            </if>
+            <if test="coverUrl != null and coverUrl != ''">
+                cover_url = #{coverUrl},
+            </if>
+            <if test="count != null">
+                count = #{count},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 批量删除 -->
+    <delete id="deleteList">
+        delete
+        from `t_product`
+        where id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getList" resultType="com.ecommerce.model.entity.Product">
+        select *
+        from `t_product`
+        <where>
+            <if test="uid != '' and uid != null">
+                seller_id = #{uid}
+            </if>
+            <if test="uid=='' or uid == null">
+                and seller_id != 'none'
+            </if>
+            <if test="category != '' and category != null">
+                and category = #{category}
+            </if>
+        </where>
+    </select>
+</mapper>
